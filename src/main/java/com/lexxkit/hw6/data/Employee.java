@@ -3,20 +3,20 @@ package com.lexxkit.hw6.data;
 import java.util.Objects;
 
 public class Employee {
-    private String name;
-    private String surname;
+    private String firstName;
+    private String lastName;
 
-    public Employee(String name, String surname) {
-        this.name = name;
-        this.surname = surname;
+    public Employee(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getLastName() {
+        return lastName;
     }
 
     @Override
@@ -24,19 +24,19 @@ public class Employee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return name.equals(employee.name) && surname.equals(employee.surname);
+        return firstName.equals(employee.firstName) && lastName.equals(employee.lastName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, surname);
+        return Objects.hash(firstName, lastName);
     }
 
     @Override
     public String toString() {
         return "Employee{" +
-                "name='" + name + '\'' +
-                ", surname=" + surname +
+                "name='" + firstName + '\'' +
+                ", surname=" + lastName +
                 '}';
     }
 }

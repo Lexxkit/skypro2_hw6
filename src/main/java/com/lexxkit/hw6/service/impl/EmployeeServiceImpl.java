@@ -1,12 +1,19 @@
 package com.lexxkit.hw6.service.impl;
 
 import com.lexxkit.hw6.data.Employee;
+import com.lexxkit.hw6.exception.EmployeeNotFoundException;
 import com.lexxkit.hw6.service.EmployeeService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    private Employee[] employees;
+    private Employee[] employees = {
+            new Employee("Natka", "Float"),
+            new Employee("Madeleine", "Foad"),
+            new Employee("Hurley", "Fraanchyonok"),
+            new Employee("Etta", "Stoffer"),
+            new Employee("Dame", "Pitkins"),
+    };
     /*
     [{
   "firstName": "Natka",
@@ -28,21 +35,41 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee addEmployee(String firstName, String lastName) {
-        for (int i = 0; i < employees.length; i++) {
-            if (employees[i] == null) {
-                employees[i] = new Employee(firstName, lastName);
+        try {
+            Employee employee = findEmployee(firstName, lastName);
+            throw new RuntimeException("EmployeeAlreadyAdded");
+        } catch (RuntimeException e) {
+            for (int i = 0; i < employees.length; i++) {
+                if (employees[i] == null) {
+                    Employee employee = new Employee(firstName, lastName);
+                    employees[i] = employee;
+                    return employee;
+                }
             }
+            throw new RuntimeException("EmployeeStorageIsFullException");
         }
-        return null;
     }
 
     @Override
     public Employee removeEmployee(String firstName, String lastName) {
-        return null;
+        Employee employee = findEmployee(firstName, lastName);
+        for (int i = 0; i < employees.length; i++) {
+            if (employees[i] != null && employees[i].equals(employee)) {
+                employees[i] = null;
+                break;
+            }
+        }
+        return employee;
     }
 
     @Override
     public Employee findEmployee(String firstName, String lastName) {
-        return null;
+        Employee employee = new Employee(firstName, lastName);
+        for (int i = 0; i < employees.length; i++) {
+            if (employees[i] != null && employees[i].equals(employee)) {
+                return employees[i];
+            }
+        }
+        throw new EmployeeNotFoundException("There is no such Employee: " + employee);
     }
 }

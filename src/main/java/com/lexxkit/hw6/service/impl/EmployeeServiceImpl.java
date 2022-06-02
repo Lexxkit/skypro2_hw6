@@ -1,7 +1,9 @@
 package com.lexxkit.hw6.service.impl;
 
 import com.lexxkit.hw6.data.Employee;
+import com.lexxkit.hw6.exception.EmployeeAlreadyAddedException;
 import com.lexxkit.hw6.exception.EmployeeNotFoundException;
+import com.lexxkit.hw6.exception.EmployeeStorageIsFullException;
 import com.lexxkit.hw6.service.EmployeeService;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +39,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee addEmployee(String firstName, String lastName) {
         try {
             Employee employee = findEmployee(firstName, lastName);
-            throw new RuntimeException("EmployeeAlreadyAdded");
+            throw new EmployeeAlreadyAddedException(employee + " has already been saved.");
         } catch (RuntimeException e) {
             for (int i = 0; i < employees.length; i++) {
                 if (employees[i] == null) {
@@ -46,7 +48,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     return employee;
                 }
             }
-            throw new RuntimeException("EmployeeStorageIsFullException");
+            throw new EmployeeStorageIsFullException("There is no free space to save new employee.");
         }
     }
 

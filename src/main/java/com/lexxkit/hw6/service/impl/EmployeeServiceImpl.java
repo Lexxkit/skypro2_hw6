@@ -40,7 +40,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         try {
             Employee employee = findEmployee(firstName, lastName);
             throw new EmployeeAlreadyAddedException(employee + " has already been saved.");
-        } catch (RuntimeException e) {
+        } catch (EmployeeNotFoundException e) {
             for (int i = 0; i < employees.length; i++) {
                 if (employees[i] == null) {
                     Employee employee = new Employee(firstName, lastName);

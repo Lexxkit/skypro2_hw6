@@ -7,71 +7,52 @@ import com.lexxkit.hw6.exception.EmployeeStorageIsFullException;
 import com.lexxkit.hw6.service.EmployeeService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    private Employee[] employees = {
+    private final int MAX_ARRAY_SIZE = 5;
+
+    private List<Employee> employees = new ArrayList<>(List.of(
             new Employee("Natka", "Float"),
             new Employee("Madeleine", "Foad"),
             new Employee("Hurley", "Fraanchyonok"),
             new Employee("Etta", "Stoffer"),
-            new Employee("Dame", "Pitkins"),
-    };
-    /*
-    [{
-  "firstName": "Natka",
-  "lastName": "Float"
-}, {
-  "firstName": "Madeleine",
-  "lastName": "Foad"
-}, {
-  "firstName": "Hurley",
-  "lastName": "Fraanchyonok"
-}, {
-  "firstName": "Etta",
-  "lastName": "Stoffer"
-}, {
-  "firstName": "Dame",
-  "lastName": "Pitkins"
-}]
-     */
+            new Employee("Dame", "Pitkins")
+    ));
 
     @Override
     public Employee addEmployee(String firstName, String lastName) {
-        try {
-            Employee employee = findEmployee(firstName, lastName);
-            throw new EmployeeAlreadyAddedException(employee + " has already been saved.");
-        } catch (EmployeeNotFoundException e) {
-            for (int i = 0; i < employees.length; i++) {
-                if (employees[i] == null) {
-                    Employee employee = new Employee(firstName, lastName);
-                    employees[i] = employee;
-                    return employee;
-                }
-            }
+        if (employees.size() >= MAX_ARRAY_SIZE) {
             throw new EmployeeStorageIsFullException("There is no free space to save new employee.");
         }
+
+        Employee employee = new Employee(firstName, lastName);
+        if (employees.contains(employee)){
+            throw new EmployeeAlreadyAddedException(employee + " has already been saved.");
+        } else {
+            employees.add(employee);
+        }
+
+        return employee;
     }
 
     @Override
     public Employee removeEmployee(String firstName, String lastName) {
         Employee employee = findEmployee(firstName, lastName);
-        for (int i = 0; i < employees.length; i++) {
-            if (employees[i] != null && employees[i].equals(employee)) {
-                employees[i] = null;
-                break;
-            }
-        }
+        employees.remove(employee);
         return employee;
     }
+
 
     @Override
     public Employee findEmployee(String firstName, String lastName) {
         Employee employee = new Employee(firstName, lastName);
-        for (int i = 0; i < employees.length; i++) {
-            if (employees[i] != null && employees[i].equals(employee)) {
-                return employees[i];
-            }
+        if (!employees.contains(employee)) {
+            throw new EmployeeNotFoundException("There is no such Employee: " + employee);
         }
-        throw new EmployeeNotFoundException("There is no such Employee: " + employee);
+
+        return employee;
     }
 }

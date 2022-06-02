@@ -8,13 +8,14 @@ import com.lexxkit.hw6.service.EmployeeService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     private final int MAX_ARRAY_SIZE = 5;
 
-    private List<Employee> employees = new ArrayList<>(List.of(
+    private List<Employee> employees = new ArrayList<>(Arrays.asList(
             new Employee("Natka", "Float"),
             new Employee("Madeleine", "Foad"),
             new Employee("Hurley", "Fraanchyonok"),

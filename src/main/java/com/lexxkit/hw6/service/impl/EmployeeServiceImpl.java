@@ -55,4 +55,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return employee;
     }
+
+    @Override
+    public List<Employee> getEmployees() {
+        return employees;
+    }
 }

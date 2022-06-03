@@ -9,19 +9,24 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     private final int MAX_ARRAY_SIZE = 5;
 
-    private List<Employee> employees = new ArrayList<>(Arrays.asList(
-            new Employee("Natka", "Float"),
-            new Employee("Madeleine", "Foad"),
-            new Employee("Hurley", "Fraanchyonok"),
-            new Employee("Etta", "Stoffer"),
-            new Employee("Dame", "Pitkins")
-    ));
+    private List<Employee> employees;
+
+    public EmployeeServiceImpl() {
+        this.employees = new ArrayList<>(Arrays.asList(
+                new Employee("Natka", "Float"),
+                new Employee("Madeleine", "Foad"),
+                new Employee("Hurley", "Fraanchyonok"),
+                new Employee("Etta", "Stoffer"),
+                new Employee("Dame", "Pitkins")
+        ));
+    }
 
     @Override
     public Employee addEmployee(String firstName, String lastName) {
@@ -32,10 +37,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = new Employee(firstName, lastName);
         if (employees.contains(employee)){
             throw new EmployeeAlreadyAddedException(employee + " has already been saved.");
-        } else {
-            employees.add(employee);
         }
 
+        employees.add(employee);
         return employee;
     }
 
@@ -50,15 +54,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee findEmployee(String firstName, String lastName) {
         Employee employee = new Employee(firstName, lastName);
-        if (!employees.contains(employee)) {
-            throw new EmployeeNotFoundException("There is no such Employee: " + employee);
+        if (employees.contains(employee)) {
+            return employee;
         }
-
-        return employee;
+        throw new EmployeeNotFoundException("There is no such Employee: " + employee);
     }
 
     @Override
     public List<Employee> getEmployees() {
-        return employees;
+        return Collections.unmodifiableList(employees);
     }
 }

@@ -7,25 +7,21 @@ import com.lexxkit.hw6.exception.EmployeeStorageIsFullException;
 import com.lexxkit.hw6.service.EmployeeService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     private final int MAX_ARRAY_SIZE = 5;
 
-    private List<Employee> employees;
+    private Map<String, Employee> employees;
 
     public EmployeeServiceImpl() {
-        this.employees = new ArrayList<>(Arrays.asList(
-                new Employee("Natka", "Float"),
-                new Employee("Madeleine", "Foad"),
-                new Employee("Hurley", "Fraanchyonok"),
-                new Employee("Etta", "Stoffer"),
-                new Employee("Dame", "Pitkins")
-        ));
+        this.employees = new HashMap<>(
+                Map.of(
+                        "Natka Float", new Employee("Natka", "Float"),
+                        "Madeleine Foad", new Employee("Madeleine", "Foad")
+                )
+        );
     }
 
     @Override
@@ -34,34 +30,39 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new EmployeeStorageIsFullException("There is no free space to save new employee.");
         }
 
-        Employee employee = new Employee(firstName, lastName);
-        if (employees.contains(employee)){
-            throw new EmployeeAlreadyAddedException(employee + " has already been saved.");
+        String employeeName = firstName + " " + lastName;
+        if (employees.containsKey(employeeName)){
+            throw new EmployeeAlreadyAddedException(employeeName + " has already been saved.");
         }
 
-        employees.add(employee);
+        Employee employee = new Employee(firstName, lastName);
+        employees.put(employeeName, employee);
         return employee;
     }
 
     @Override
     public Employee removeEmployee(String firstName, String lastName) {
-        Employee employee = findEmployee(firstName, lastName);
-        employees.remove(employee);
-        return employee;
+        String employeeName = firstName + " " + lastName;
+        Employee employee = employees.remove(employeeName);
+        if (employee != null) {
+            return employee;
+        }
+        throw new EmployeeNotFoundException("There is no such Employee: " + employeeName);
     }
 
 
     @Override
     public Employee findEmployee(String firstName, String lastName) {
-        Employee employee = new Employee(firstName, lastName);
-        if (employees.contains(employee)) {
+        String employeeName = firstName + " " + lastName;
+        Employee employee = employees.get(employeeName);
+        if (employee != null) {
             return employee;
         }
-        throw new EmployeeNotFoundException("There is no such Employee: " + employee);
+        throw new EmployeeNotFoundException("There is no such Employee: " + employeeName);
     }
 
     @Override
-    public List<Employee> getEmployees() {
-        return Collections.unmodifiableList(employees);
+    public Map<String, Employee> getEmployees() {
+        return Collections.unmodifiableMap(employees);
     }
 }

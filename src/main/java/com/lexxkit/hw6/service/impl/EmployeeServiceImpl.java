@@ -18,14 +18,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeServiceImpl() {
         this.employees = new HashMap<>(
                 Map.of(
-                        "Natka Float", new Employee("Natka", "Float"),
-                        "Madeleine Foad", new Employee("Madeleine", "Foad")
+                        "Natka Float", new Employee("Natka", "Float", 10, "1"),
+                        "Madeleine Foad", new Employee("Madeleine", "Foad", 10, "2"),
+                        "Hurley Fraanchyonok", new Employee("Hurley", "Fraanchyonok", 20, "1"),
+                        "Dame Pitkins", new Employee("Dame", "Pitkins", 15, "1")
                 )
         );
     }
 
     @Override
-    public Employee addEmployee(String firstName, String lastName) {
+    public Employee addEmployee(String firstName, String lastName, double salary, String department) {
         if (employees.size() >= MAX_ARRAY_SIZE) {
             throw new EmployeeStorageIsFullException("There is no free space to save new employee.");
         }
@@ -35,7 +37,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new EmployeeAlreadyAddedException(employeeName + " has already been saved.");
         }
 
-        Employee employee = new Employee(firstName, lastName);
+        Employee employee = new Employee(firstName, lastName, salary, department);
         employees.put(employeeName, employee);
         return employee;
     }

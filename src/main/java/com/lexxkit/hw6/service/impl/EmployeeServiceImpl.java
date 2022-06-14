@@ -44,27 +44,26 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee removeEmployee(String firstName, String lastName) {
-        String employeeName = firstName + " " + lastName;
-        Employee employee = employees.remove(employeeName);
-        if (employee != null) {
-            return employee;
-        }
-        throw new EmployeeNotFoundException("There is no such Employee: " + employeeName);
+        String employeeKey = getKeyByFirstNameAndLastName(firstName, lastName);
+        return employees.remove(employeeKey);
     }
 
 
     @Override
     public Employee findEmployee(String firstName, String lastName) {
-        String employeeName = firstName + " " + lastName;
-        Employee employee = employees.get(employeeName);
-        if (employee != null) {
-            return employee;
-        }
-        throw new EmployeeNotFoundException("There is no such Employee: " + employeeName);
+        String employeeKey = getKeyByFirstNameAndLastName(firstName, lastName);
+        return employees.get(employeeKey);
     }
 
     @Override
     public Map<String, Employee> getEmployees() {
         return Collections.unmodifiableMap(employees);
+    }
+
+    private String getKeyByFirstNameAndLastName(String firstName, String lastName) {
+        return employees.keySet().stream()
+                .filter(e -> e.equals(firstName + " " + lastName))
+                .findAny()
+                .orElseThrow(() -> new EmployeeNotFoundException());
     }
 }

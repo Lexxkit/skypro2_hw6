@@ -8,6 +8,8 @@ import java.util.Map;
 public interface DepartmentService {
     Map<String, List<Employee>> getAllEmployeesGroupByDep();
 
+    Map<String, List<Employee>> getEmployeesForDep(String department);
+
     Employee getEmployeeWithMaxSalary(String department);
 
     Employee getEmployeeWithMinSalary(String department);

@@ -23,7 +23,17 @@ public class DepartmentServiceImpl implements DepartmentService {
     public Map<String, List<Employee>> getAllEmployeesGroupByDep() {
         Map<String, Employee> allEmployees = employeeService.getEmployees();
 
-        return allEmployees.values().stream().collect(Collectors.groupingBy(e -> e.getDepartment()));
+        return allEmployees.values().stream()
+                .collect(Collectors.groupingBy(e -> e.getDepartment()));
+    }
+
+    @Override
+    public Map<String, List<Employee>> getEmployeesForDep(String department) {
+        Map<String, Employee> allEmployees = employeeService.getEmployees();
+
+        return allEmployees.values().stream()
+                .filter(e -> e.getDepartment().equals(department))
+                .collect(Collectors.groupingBy(e -> e.getDepartment()));
     }
 
     @Override

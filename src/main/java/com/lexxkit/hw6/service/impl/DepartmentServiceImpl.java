@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
@@ -29,31 +30,31 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Map<String, List<Employee>> getEmployeesForDep(String department) {
-        Map<String, Employee> allEmployees = employeeService.getEmployees();
 
-        return allEmployees.values().stream()
-                .filter(e -> e.getDepartment().equals(department))
+        return getEmployeeStreamForDepartment(department)
                 .collect(Collectors.groupingBy(e -> e.getDepartment()));
     }
 
     @Override
     public Employee getEmployeeWithMaxSalary(String department) {
-        Map<String, Employee> allEmployees = employeeService.getEmployees();
 
-        return allEmployees.values().stream()
-                .filter(e -> e.getDepartment().equals(department))
+        return getEmployeeStreamForDepartment(department)
                 .max(Comparator.comparingDouble(e -> e.getSalary()))
                 .orElseThrow(() -> new EmployeeNotFoundException());
     }
 
     @Override
     public Employee getEmployeeWithMinSalary(String department) {
-        Map<String, Employee> allEmployees = employeeService.getEmployees();
 
-        return allEmployees.values().stream()
-                .filter(e -> e.getDepartment().equals(department))
+        return getEmployeeStreamForDepartment(department)
                 .min(Comparator.comparingDouble(e -> e.getSalary()))
                 .orElseThrow(() -> new EmployeeNotFoundException());
     }
 
+    private Stream<Employee> getEmployeeStreamForDepartment(String department) {
+        Map<String, Employee> allEmployees = employeeService.getEmployees();
+
+        return allEmployees.values().stream()
+                .filter(e -> e.getDepartment().equals(department));
+    }
 }

@@ -2,6 +2,8 @@ package com.lexxkit.hw6.data;
 
 import java.util.Objects;
 
+import static org.apache.commons.lang3.StringUtils.capitalize;
+
 public class Employee {
     private String firstName;
     private String lastName;
@@ -9,8 +11,8 @@ public class Employee {
     private String department;
 
     public Employee(String firstName, String lastName, double salary, String department) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.firstName = capitalize(firstName.toLowerCase());
+        this.lastName = capitalize(lastName.toLowerCase());
         this.salary = salary;
         this.department = department;
     }
@@ -55,5 +57,9 @@ public class Employee {
     @Override
     public String toString() {
         return "name='" + firstName + "', surname='" + lastName + "'";
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 }

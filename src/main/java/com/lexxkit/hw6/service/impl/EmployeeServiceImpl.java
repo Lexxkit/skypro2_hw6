@@ -18,14 +18,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeServiceImpl() {
         this.employees = new HashMap<>(
                 Map.of(
-                        "Natka Float", new Employee("Natka", "Float"),
-                        "Madeleine Foad", new Employee("Madeleine", "Foad")
+                        "Natka Float", new Employee("Natka", "Float", 10, "1"),
+                        "Madeleine Foad", new Employee("Madeleine", "Foad", 10, "2"),
+                        "Hurley Fraanchyonok", new Employee("Hurley", "Fraanchyonok", 20, "1"),
+                        "Dame Pitkins", new Employee("Dame", "Pitkins", 15, "1")
                 )
         );
     }
 
     @Override
-    public Employee addEmployee(String firstName, String lastName) {
+    public Employee addEmployee(String firstName, String lastName, double salary, String department) {
         if (employees.size() >= MAX_ARRAY_SIZE) {
             throw new EmployeeStorageIsFullException("There is no free space to save new employee.");
         }
@@ -35,34 +37,33 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new EmployeeAlreadyAddedException(employeeName + " has already been saved.");
         }
 
-        Employee employee = new Employee(firstName, lastName);
+        Employee employee = new Employee(firstName, lastName, salary, department);
         employees.put(employeeName, employee);
         return employee;
     }
 
     @Override
     public Employee removeEmployee(String firstName, String lastName) {
-        String employeeName = firstName + " " + lastName;
-        Employee employee = employees.remove(employeeName);
-        if (employee != null) {
-            return employee;
-        }
-        throw new EmployeeNotFoundException("There is no such Employee: " + employeeName);
+        String employeeKey = getKeyByFirstNameAndLastName(firstName, lastName);
+        return employees.remove(employeeKey);
     }
 
 
     @Override
     public Employee findEmployee(String firstName, String lastName) {
-        String employeeName = firstName + " " + lastName;
-        Employee employee = employees.get(employeeName);
-        if (employee != null) {
-            return employee;
-        }
-        throw new EmployeeNotFoundException("There is no such Employee: " + employeeName);
+        String employeeKey = getKeyByFirstNameAndLastName(firstName, lastName);
+        return employees.get(employeeKey);
     }
 
     @Override
     public Map<String, Employee> getEmployees() {
         return Collections.unmodifiableMap(employees);
+    }
+
+    private String getKeyByFirstNameAndLastName(String firstName, String lastName) {
+        return employees.keySet().stream()
+                .filter(e -> e.equals(firstName + " " + lastName))
+                .findAny()
+                .orElseThrow(() -> new EmployeeNotFoundException());
     }
 }

@@ -4,7 +4,9 @@ import com.lexxkit.hw6.data.Employee;
 import com.lexxkit.hw6.exception.EmployeeAlreadyAddedException;
 import com.lexxkit.hw6.exception.EmployeeNotFoundException;
 import com.lexxkit.hw6.exception.EmployeeStorageIsFullException;
+import com.lexxkit.hw6.exception.WrongNameSpellingException;
 import com.lexxkit.hw6.service.EmployeeService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -28,9 +30,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee addEmployee(String firstName, String lastName, double salary, String department) {
+        if (!checkNameSpelling(firstName) || !checkNameSpelling(lastName)) {
+            throw new WrongNameSpellingException();
+        }
         if (employees.size() >= MAX_ARRAY_SIZE) {
             throw new EmployeeStorageIsFullException("There is no free space to save new employee.");
         }
+        firstName = StringUtils.capitalize(firstName);
+        lastName = StringUtils.capitalize(lastName);
 
         String employeeName = firstName + " " + lastName;
         if (employees.containsKey(employeeName)){
@@ -44,6 +51,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee removeEmployee(String firstName, String lastName) {
+        if (!checkNameSpelling(firstName) || !checkNameSpelling(lastName)) {
+            throw new WrongNameSpellingException();
+        }
+        firstName = StringUtils.capitalize(firstName);
+        lastName = StringUtils.capitalize(lastName);
         String employeeKey = getKeyByFirstNameAndLastName(firstName, lastName);
         return employees.remove(employeeKey);
     }
@@ -51,6 +63,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee findEmployee(String firstName, String lastName) {
+        if (!checkNameSpelling(firstName) || !checkNameSpelling(lastName)) {
+            throw new WrongNameSpellingException();
+        }
+        firstName = StringUtils.capitalize(firstName);
+        lastName = StringUtils.capitalize(lastName);
         String employeeKey = getKeyByFirstNameAndLastName(firstName, lastName);
         return employees.get(employeeKey);
     }
@@ -65,5 +82,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .filter(e -> e.equals(firstName + " " + lastName))
                 .findAny()
                 .orElseThrow(() -> new EmployeeNotFoundException());
+    }
+
+    private boolean checkNameSpelling(String name) {
+        return StringUtils.isAlpha(name);
     }
 }

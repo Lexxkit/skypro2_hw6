@@ -21,14 +21,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private Map<String, Employee> employees;
 
     public EmployeeServiceImpl() {
-        this.employees = new HashMap<>(
-                Map.of(
-                        "Natka Float", new Employee("Natka", "Float", 10, "1"),
-                        "Madeleine Foad", new Employee("Madeleine", "Foad", 10, "2"),
-                        "Hurley Fraanchyonok", new Employee("Hurley", "Fraanchyonok", 20, "1"),
-                        "Dame Pitkins", new Employee("Dame", "Pitkins", 15, "1")
-                )
-        );
+        this.employees = new HashMap<>();
     }
 
     @Override

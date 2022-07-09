@@ -15,6 +15,10 @@ public class EmployeeTestConstants {
     public final static Employee IVAN_IVANOV = new Employee("Ivan", "Ivanov", 30, "2");
     public final static Employee BORIS_BORISOV = new Employee("Boris", "Borisov", 15, "3");
     public final static Employee WRONG_NAME_SPELLING = new Employee("Test_1", "Test!", 10, "1");
+    public final static String DEP_1 = "1";
+    public final static String NON_EXISTENT_DEP = "6";
+    public final static Employee EMPLOYEE_MIN_SALARY_DEP_1 = NATKA_FLOAT;
+    public final static Employee EMPLOYEE_MAX_SALARY_DEP_1 = HURLEY_FRAAN;
     public final static Map<String, Employee> ALL_EMPLOYEES_MAP = new HashMap<>(
             Map.of(
                     "Natka Float", NATKA_FLOAT,
@@ -25,5 +29,10 @@ public class EmployeeTestConstants {
             )
     );
     public final static Map<String, List<Employee>> ALL_EMPLOYEES_GROUP_BY_DEPARTMENT =  ALL_EMPLOYEES_MAP.values().stream()
-                .collect(Collectors.groupingBy(e -> e.getDepartment()));
+                .collect(Collectors.groupingBy(Employee::getDepartment));
+
+    public final static Map<String, List<Employee>> EMPLOYEES_FOR_DEP_1 = ALL_EMPLOYEES_MAP.values().stream()
+            .filter(e -> e.getDepartment().equals(DEP_1)).collect(Collectors.groupingBy(Employee::getDepartment));
+
+
 }

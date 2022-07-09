@@ -3,7 +3,6 @@ package com.lexxkit.hw6.service;
 import com.lexxkit.hw6.data.Employee;
 import com.lexxkit.hw6.exception.EmployeeNotFoundException;
 import com.lexxkit.hw6.service.impl.DepartmentServiceImpl;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,7 +32,7 @@ class DepartmentServiceImplTest {
         when(employeeServiceMock.getEmployees()).thenReturn(ALL_EMPLOYEES_MAP);
         Map<String, List<Employee>> result = out.getAllEmployeesGroupByDep();
 
-        assertThat(result).containsAllEntriesOf(ALL_EMPLOYEES_GROUP_BY_DEPARTMENT);
+        assertThat(result).containsExactlyInAnyOrderEntriesOf(ALL_EMPLOYEES_GROUP_BY_DEPARTMENT);
     }
 
     @Test
@@ -41,7 +40,15 @@ class DepartmentServiceImplTest {
         when(employeeServiceMock.getEmployees()).thenReturn(ALL_EMPLOYEES_MAP);
         Map<String, List<Employee>> result = out.getEmployeesForDep(DEP_1);
 
-        assertThat(result).containsAllEntriesOf(EMPLOYEES_FOR_DEP_1);
+        assertThat(result).containsExactlyInAnyOrderEntriesOf(EMPLOYEES_FOR_DEP_1);
+    }
+
+    @Test
+    void shouldReturnEmptyMapWhenDepartmentNonExistent() {
+        when(employeeServiceMock.getEmployees()).thenReturn(ALL_EMPLOYEES_MAP);
+        Map<String, List<Employee>> result = out.getEmployeesForDep(NON_EXISTENT_DEP);
+
+        assertThat(result).hasSize(0);
     }
 
     @Test
@@ -53,7 +60,7 @@ class DepartmentServiceImplTest {
     }
 
     @Test
-    void shouldThrowEmployeeNotFoundExceptionWhenMinSalaryAndDepartmentNonExists() {
+    void shouldThrowEmployeeNotFoundExceptionWhenMinSalaryAndDepartmentNonExistent() {
         when(employeeServiceMock.getEmployees()).thenReturn(ALL_EMPLOYEES_MAP);
 
         assertThrows(EmployeeNotFoundException.class, () -> out.getEmployeeWithMinSalary(NON_EXISTENT_DEP));
@@ -68,7 +75,7 @@ class DepartmentServiceImplTest {
     }
 
     @Test
-    void shouldThrowEmployeeNotFoundExceptionWhenMaxSalaryAndDepartmentNonExists() {
+    void shouldThrowEmployeeNotFoundExceptionWhenMaxSalaryAndDepartmentNonExistent() {
         when(employeeServiceMock.getEmployees()).thenReturn(ALL_EMPLOYEES_MAP);
 
         assertThrows(EmployeeNotFoundException.class, () -> out.getEmployeeWithMaxSalary(NON_EXISTENT_DEP));
